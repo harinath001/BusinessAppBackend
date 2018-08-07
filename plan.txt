@@ -1,0 +1,113 @@
+Notification Service
+ -- API
+ -- Google Push Notifications
+    -- Push Notifications to android devices
+
+ -- Google Calender Notifications
+    -- Push Notifications to google calender
+
+ -- SMS Notifications
+    -- Push Notifications to phone numbers
+
+ -- Email Notifications
+    -- Send notifications to given emails
+
+ -- Notification Scheduler Service
+    -- Schedules a notifications using any of those above services
+
+Booking Service
+ -- API
+    -- Create a booking
+    -- Cancel a booking
+    -- Confirm a booking (admin will confirm the booking)
+    -- Get list of bookings
+        -- Filters
+            -- time
+            -- type of booking
+
+Permission Service
+ -- API
+    -- make only some urls to admin access
+    -- block
+
+
+Sessions Service
+ --  API
+    -- Create a session
+    -- Delete a session
+    -- update/extend a session (if a session is created for 1 day, we should be able to alter the session time)
+
+Registration Service
+ -- API
+    -- USER
+        -- Create a user under particular agency
+        -- Activate a user
+        -- Delete a user
+        -- Block or Deactivate a user
+        -- Make/create admin user
+    -- Agency
+        -- Create agency
+        -- Activate a agency
+        -- Delete a agency
+        -- Block or deactivate a agency
+
+
+
+Login Service
+ -- API
+    -- Authenticate the user
+
+Items Service
+ -- API
+    -- Item
+        -- Create a Item (must include Item type)
+        -- Delete a Item
+        -- Update a Item (price / attributes)
+        -- List of Items
+            -- Filters
+                -- type of products
+    -- Item Type
+        -- Create item type
+        -- Update Item Type
+        -- Delete Item type
+
+Delivery Service
+ -- API
+    -- Create Delivery
+        -- Single Delivery for single order
+        -- Multiple Deliveries for Single Order
+    -- Cancel Delivery
+    -- Track Delivery
+    -- Update / Reschedule / Postpone Delivery
+    -- Get List of Deliveries
+        -- Filters to get list
+            --  Time
+            --  Status of Delivery (like confirmed or pending etc)
+
+
+Payment Service
+ "This service tracks, calculates and updates the payments. It also notifies the user about the payments"
+ -- API
+ -- Cron for payment reminders
+
+Documents/Reports Generation Service
+ "This service will generate reports based on the bussiness logic"
+ -- API
+ -- Cron for some reports to get generate
+
+Files Transfer Service
+ "This service is used to download particular files from the system"
+ -- API
+
+Feedback Service
+ "This service will accept the feedback messages and notifies the admin about respective feedback"
+ -- API
+
+CMS Service
+ -- New Updates Service
+    -- API
+
+ -- Personal Message Service
+    -- API
+
+

@@ -1,0 +1,16 @@
+<div class="top">
+<div class="top_text">Classic Marketing Agencies</div>
+<div class="top-nav" ng-init="highlighted='first'; o=['first', 'second', 'third', 'fourth', 'fifth']">
+
+	<!--  -->
+	{% verbatim %}
+	<label ng-repeat="x in o" type="button" class='top-nav-button' ng-class="{ ' top-nav-button-highlighted' : highlighted=='{{x}}' }" ng-click="highlighted='{{x}}' "> {{ x }} </label>
+	{% endverbatim %}
+	<!-- <label type="button" class=' top-nav-button' ng-class="{ ' top-nav-button-highlighted' : highlighted=='second'}" ng-click="highlighted='second'">Second</label>
+	<label type="button" class=' top-nav-button' ng-class="{ ' top-nav-button-highlighted' : highlighted=='third'}" ng-click="highlighted='third'">Third</label>
+	<label type="button" class=' top-nav-button' ng-class="{ ' top-nav-button-highlighted' : highlighted=='four'}" ng-click="highlighted='four'" style="float:right;">Four</label>
+	<label type="button" class=' top-nav-button' ng-class="{ ' top-nav-button-highlighted' : highlighted=='five'}" ng-click="highlighted='five'">Five</label> -->
+</div>
+
+</div>
+
