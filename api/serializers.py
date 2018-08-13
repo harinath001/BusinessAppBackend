@@ -14,28 +14,68 @@ class ClassicSerializer(ModelSerializer):
 class ItemTypeSerializer(ClassicSerializer):
     class Meta:
         model = ItemType
-        fields = ('name', )
+        fields = ('id', 'name', 'units')
+        read_only_fields = ('id',)
 
 
 class ItemSerializer(ClassicSerializer):
     class Meta:
         model = Item
-        fields = ('name', 'item_type')
+        fields = ('id', 'name', 'item_type')
+        read_only_fields = ('id',)
+
+
+class BookingItemsMappingSerializer(ClassicSerializer):
+    class Meta:
+        model = BookingItemsMapping
+        fields = ('id', 'booking', 'item', 'quantity')
+        read_only_fields = ('id',)
+
+
+class BookingToDeliveryMappingSerializer(ClassicSerializer):
+    class Meta:
+        model = BookingToDeliveryMapping
+        fields = ('id', 'booking', 'delivery')
+        read_only_fields = ('id',)
+
+
+class DeliverySerializer(ClassicSerializer):
+    class Meta:
+        model = Delivery
+        fields = ('id', 'vehicle_number', 'date_start', 'date_end', 'driver_phone')
+        read_only_fields = ('id',)
+
+
+class BookingSerializer(ClassicSerializer):
+    class Meta:
+        model = Booking
+        fields = ('id', 'user', 'invoice', 'is_active', 'delivery_list', 'payments_list', 'taxes_list', 'items_price_list')
+        read_only_fields = ('id', 'delivery_list', 'payments_list', 'taxes_list', 'items_price_list')
+
 
 
 class AgencySerializer(ModelSerializer):
     class Meta:
         model = Agency
-        fields = ('name', 'phone', 'is_active', 'created_by')
-        read_only_fields = ('is_active', )
+        fields = ('id', 'name', 'phone', 'created_by', 'is_active')
+        read_only_fields = ('is_active', 'id')
+
+
+class AgencyAdminSerializer(ModelSerializer):
+    class Meta:
+        model = Agency
+        fields = ('id', 'name', 'phone', 'created_by', 'is_active')
+        read_only_fields = ('id', 'name', 'phone', 'created_by')
 
 
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('name', 'phone', 'email', 'password_hash', 'is_active')
-        write_only_fields = ('password_hash')
-        read_only_fields = ()
+        fields = ('id', 'name', 'phone', 'email', 'password_hash', 'is_active')
+        extra_kwargs = {
+            'password_hash': {'write_only': True}
+        }
+        read_only_fields = ('id', )
 
     def validate_name(self, value):
         return value
@@ -48,6 +88,31 @@ class UserSerializer(ModelSerializer):
 
     def validate_is_active(self, value):
         return value
+
+
+class UserPasswordUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('password_hash', 'id')
+        extra_kwargs = {'password_hash': {"write_only":  True}}
+        read_only_fields = ('id',)
+
+    def validate_password_hash(self, value):
+        return sha256(value).hexdigest()
+
+
+class UserRetrieveSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'phone', 'email', 'is_active')
+        read_only_fields = ('id',)
+
+
+class UserStatusSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('is_active', 'id', 'is_admin')
+        read_only_fields = ('id',)
 
 
 class RegistrationSerializer(Serializer):
@@ -80,3 +145,23 @@ class RegistrationSerializer(Serializer):
         else:
             raise ValidationError("validation failed !!")
 
+
+class TaxTypeSerializer(ClassicSerializer):
+    class Meta:
+        model = TaxType
+        fields = ('id', 'name', )
+        read_only_fields = ('id', )
+
+
+class TaxSerializer(ClassicSerializer):
+    class Meta:
+        model = Tax
+        fields = ('id', 'name', 'tax_type', 'value')
+        read_only_fields = ('id', )
+
+
+class PaymentSerializer(ClassicSerializer):
+    class Meta:
+        model = Payment
+        fields = ('id', 'amount_paid', 'reference_number', 'payment_mode', 'booking')
+        read_only_fields = ('id', )

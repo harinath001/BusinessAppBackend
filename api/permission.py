@@ -2,18 +2,23 @@ from rest_framework.permissions import BasePermission
 from middleware.models import GeneralPermissions
 import re
 
+def is_user_admin(user):
+    if hasattr(user, 'is_admin') and user.is_admin:
+        return True
+    return False
+
 class AdminPermissions(BasePermission):
 
     def __init__(self):
         super(AdminPermissions, self).__init__()
 
     def has_permission(self, request, view):
-        if request.user and request.user.is_admin:
+        if request.user and is_user_admin(request.user):
             return True
         return False
 
     def has_object_permission(self, request, view, obj):
-        if request.user and request.user.is_admin:
+        if request.user and is_user_admin(request.user):
             return True
         return False
 
@@ -39,20 +44,30 @@ class ClassicPermission(BasePermission):
         return self.determine_permit(request, view, obj)
 
     def determine_permit(self, request, view, obj=None):
-        if request.user and request.user.is_admin:
+        if request.user and is_user_admin(request.user):
             return True
+
+        allowed_actions = view.custom_allowed_actions if hasattr(view, 'custom_allowed_actions') else ['create',
+                                                                                                       'update',
+                                                                                                       'list',
+                                                                                                       'retrieve']
+        if str(view.action).lower() not in allowed_actions:
+            return False
+
+        if hasattr(view, 'allow_all') and view.allow_all:
+            return True
+
+        if hasattr(view, 'allow_loggedin_users') and view.allow_loggedin_users and request.user and hasattr(request.user, 'phone') and request.user.phone:
+            return True
+
         if obj:
             if hasattr(request, 'user') and request.user:
                 if obj.created_by.id != request.user.id:
                     return False
             else:
                 return False
-        allowed_actions = view.custom_allowed_actions if hasattr(view, 'custom_allowed_actions') else ['create', 'update',
-                                                                                                       'list', 'retrieve']
-        if str(view.action).lower() not in allowed_actions:
-            return False
-        if hasattr(view, 'allow_all') and view.allow_all:
-            return True
+
+
         if request.user:
             all_restrictions = GeneralPermissions.objects.filter(user=request.user, is_active=True,
                                                                  method=str(view.action).lower())

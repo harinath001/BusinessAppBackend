@@ -2,6 +2,7 @@ from django.http.response import HttpResponseBadRequest, HttpResponseRedirect
 import re
 from api.models import User
 from middleware.models import Sessions
+import uuid
 
 class SessionsMiddleware:
     def __init__(self, get_response):
@@ -35,14 +36,29 @@ class SessionsMiddleware:
         else:
             self.run()
 
-        if self.is_setting_cookie_required():
-            if self.is_loggedin():
-                token = self.generate_token_for_user()
-                self.set_cookie_in_response(token)
-            else:
-                self.response = HttpResponseBadRequest("Unable to log in")
-                return self.response
+        self.session_action = self.response.get("session_action", None)
+        if self.session_action:
+            getattr(self, self.session_action)()
         return self.response
+
+    def delete_session(self):
+        try:
+            token = self.request.COOKIES.get(self.token_name,  None)
+            sess = Sessions.objects.get(id=token)
+            sess.delete()
+        except Exception as ex:
+            print(ex)
+
+    def delete_all_sessions(self):
+        if self.response.get("user_id", None) and self.response["user_id"]:
+            sess = Sessions.objects.filter(user_id=self.response["user_id"])
+            for each in sess:
+                each.delete()
+
+    def set_token(self):
+        self.delete_session()
+        token = self.generate_token_for_user()
+        self.response.set_cookie(self.token_name, token, max_age=365 * 24 * 60 * 60)
 
     def disable_csrf_token(self):
         attr = '_dont_enforce_csrf_checks'
@@ -81,17 +97,6 @@ class SessionsMiddleware:
                 HttpResponseRedirect(each_pair[1])
                 break
 
-
-
-    def is_loggedin(self):
-        if self.response.get("loggedin", None) and self.response["loggedin"]:
-            return True
-        return False
-
-    def set_cookie_in_response(self, token):
-        # response.set_cookie(key, value, max_age=max_age, expires=expires, domain=settings.SESSION_COOKIE_DOMAIN, secure=settings.SESSION_COOKIE_SECURE or None)
-        self.response.set_cookie(self.token_name, token, max_age=365*24*60*60)
-
     def validate_cookie(self):
         token = self.request.COOKIES.get(self.token_name)
         self.request.user = None
@@ -99,6 +104,7 @@ class SessionsMiddleware:
             sess = Sessions.objects.get(id=token)
             if sess.is_active:
                 self.request.user = sess.user
+                self.request.is_admin = sess.user.is_admin
                 return True
 
             return False
@@ -111,21 +117,10 @@ class SessionsMiddleware:
                 return True
         return False
 
-    def is_setting_cookie_required(self):
-        for each in self.cookie_setter_urls:
-            if self.is_regex_match(each, self.uri):
-                return True
-        return False
-
     def generate_token_for_user(self):
         user = self.response["phone"]
-        self.expire_cookies(user)
-        sess = Sessions.objects.create(**{"user": User.objects.get(phone=user)})
-        print("session generated")
+        sess = Sessions(user=User.objects.get(phone=user), id=str(uuid.uuid4()))
+        sess.save()
         return sess.id
 
-    def expire_cookies(self, user):
-        sess = Sessions.objects.filter(**{"user": User.objects.get(phone=user)})
-        for each in sess:
-            each.delete()
 

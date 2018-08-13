@@ -17,37 +17,37 @@ Notification Service
 
 Booking Service
  -- API
-    -- Create a booking
-    -- Cancel a booking
-    -- Confirm a booking (admin will confirm the booking)
-    -- Get list of bookings
+    -- Create a booking (done)
+    -- Cancel a booking (done)
+    -- Confirm a booking (admin will confirm the booking by adding the invoice) (done)
+    -- Get list of bookings (done)
         -- Filters
             -- time
             -- type of booking
 
 Permission Service
  -- API
-    -- make only some urls to admin access
-    -- block
+    -- make only some urls to admin access (done)
+    -- block (done)
 
 
 Sessions Service
  --  API
-    -- Create a session
-    -- Delete a session
+    -- Create a session (done)
+    -- Delete a session (done)
     -- update/extend a session (if a session is created for 1 day, we should be able to alter the session time)
 
 Registration Service
  -- API
     -- USER
-        -- Create a user under particular agency
-        -- Activate a user
-        -- Delete a user
-        -- Block or Deactivate a user
-        -- Make/create admin user
+        -- Create a user under particular agency (done)
+        -- Activate a user (done)
+        -- Delete a user (done)
+        -- Block or Deactivate a user (done)
+        -- Make/create admin user (done)
     -- Agency
-        -- Create agency
-        -- Activate a agency
+        -- Create agency (done)
+        -- Activate a agency (done)
         -- Delete a agency
         -- Block or deactivate a agency
 
@@ -55,27 +55,27 @@ Registration Service
 
 Login Service
  -- API
-    -- Authenticate the user
+    -- Authenticate the user (done)
 
 Items Service
  -- API
     -- Item
-        -- Create a Item (must include Item type)
-        -- Delete a Item
-        -- Update a Item (price / attributes)
+        -- Create a Item (must include Item type) (done)
+        -- Delete a Item (done)
+        -- Update a Item (price / attributes) (done)
         -- List of Items
             -- Filters
-                -- type of products
+                -- type of products (done)
     -- Item Type
-        -- Create item type
-        -- Update Item Type
-        -- Delete Item type
+        -- Create item type (done)
+        -- Update Item Type (done)
+        -- Delete Item type (done)
 
 Delivery Service
  -- API
     -- Create Delivery
-        -- Single Delivery for single order
-        -- Multiple Deliveries for Single Order
+        -- Single Delivery for single booking (done)
+        -- Multiple Deliveries for Single booking
     -- Cancel Delivery
     -- Track Delivery
     -- Update / Reschedule / Postpone Delivery
